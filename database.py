@@ -46,3 +46,11 @@ def save_goal(goal_text):
     db.add(new_goal)
     db.commit()
     return new_goal   
+def log_missed(goal_text, reasone):
+     db = sessionlocal()
+     goal =db.query(Goal).filter(Goal.goal ==goal_text).first()
+     if goal:
+          goal.streak ="0"
+          db.coomit()
+          return goal
+          
