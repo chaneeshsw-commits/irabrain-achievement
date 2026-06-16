@@ -23,6 +23,26 @@ def save_goal(goal_text):
     db.commit()
     return new_goal
 def get_goals():   
-     db = sessionlocal()    
+     db = sessionlocal()   
+
      return db.query(Goal).all()
+def log_completion(goal_text):
+    db =sessionlocal()
+    goal = db.query(Goal).filter(Goal.goal == goal_text).first()
+    if goal:
+         goal.streak = str(int(goal.streak)+1)
+         db.commit()
+         return goal
     
+def save_goal(goal_text):
+    db = sessionlocal()
+    
+    # Check if goal already exists (new!)
+    existing = db.query(Goal).filter(Goal.goal == goal_text).first()
+    if existing:
+        return existing  # Don't save again!
+    
+    new_goal = Goal(id=goal_text, goal=goal_text)
+    db.add(new_goal)
+    db.commit()
+    return new_goal   
