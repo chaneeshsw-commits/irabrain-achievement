@@ -2,8 +2,12 @@ import streamlit as st
 from mock_ira import get_ira_response  # Use mock for now
 from animations import show_loading_animation, show_success_animation
 from database import save_goal, get_goals, log_completion, log_missed
+from database import save_conversation, get_conversation_history
+
 
 st.title("🧠 IRABrain")
+
+
 
 
 goal = st.text_input("Your goal?")
@@ -15,10 +19,9 @@ if goal:
     st.info("💙 Processing...")
     
     # Use MOCK response (no API needed!)
-    #save to database
-    save_goal(goal)
-
     ira_response = get_ira_response(goal)
+    #save to database save memory 
+    save_conversation(goal,goal,ira_response)
     show_success_animation()
     st.write(ira_response)
      # GREEN ANIMATION (new!)
@@ -37,6 +40,7 @@ for g in get_goals():
         st.write(f" {g.goal} | streak: {g.streak}")
         with col2:
             if st.button(f"✅", key=f"done_{g.goal}"):
+                
                 log_completion(g.goal)
                 st.rerun()
 

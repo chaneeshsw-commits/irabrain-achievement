@@ -2,6 +2,7 @@ from sqlalchemy import create_engine, Column,String,DateTime
 from sqlalchemy.ext.declarative  import declarative_base
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
+import uuid
 
 DATABASE_URL ="sqlite:///goals.db"  
 engine =create_engine(DATABASE_URL)
@@ -54,3 +55,31 @@ def log_missed(goal_text, reasone):
           db.coomit()
           return goal
           
+import uuid
+from datetime import datetime
+
+class Conversation(Base):
+    __tablename__ = "conversations"
+    
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    goal_id = Column(String)
+    user_message = Column(String)
+    ira_response = Column(String)
+    timestamp = Column(DateTime, default=datetime.now)
+
+Base.metadata.create_all(engine)
+
+def save_conversation(goal_id, user_msg, ira_msg):
+    db = sessionlocal()
+    conv = Conversation(
+        id=str(uuid.uuid4()),
+        goal_id=goal_id, 
+        user_message=user_msg, 
+        ira_response=ira_msg
+    )
+    db.add(conv)
+    db.commit()
+
+def get_conversation_history(goal_id):
+    db = sessionlocal()
+    return db.query(Conversation).filter(Conversation.goal_id == goal_id).all()    
