@@ -1,8 +1,9 @@
 import streamlit as st
 from mock_ira import get_ira_response  # Use mock for now
 from animations import show_loading_animation, show_success_animation
-from database import save_goal, get_goals, log_completion, log_missed
-from database import save_conversation, get_conversation_history
+from database import save_goal, get_goals, log_completion, log_missed, save_conversation, get_conversation_history, update_user_stats, get_or_create_user
+
+
 
 
 st.title("🧠 IRABrain")
@@ -51,6 +52,9 @@ for g in get_goals():
                 log_missed(g.goal,reason)
                 st.warning("No worries! Tomorrow's a fresh start! 💪")
                 st.rerun()       
+user = get_or_create_user()
+st.metric("success Rate", user.success_rate)
+st.metric("Current Streak", user.current_streak)
 
     
     
